@@ -4,12 +4,24 @@
     <table class="table">
       <thead>
         <tr>
-          <th @click="sortBy('account_name')" style="cursor:pointer">Account {{ indicator('account_name') }}</th>
-          <th @click="sortBy('date')" style="cursor:pointer">Date {{ indicator('date') }}</th>
-          <th @click="sortBy('payee_name')" style="cursor:pointer">Payee {{ indicator('payee_name') }}</th>
-          <th @click="sortBy('category_name')" style="cursor:pointer">Category {{ indicator('category_name') }}</th>
-          <th @click="sortBy('memo')" style="cursor:pointer">Memo {{ indicator('memo') }}</th>
-          <th @click="sortBy('amount')" style="cursor:pointer">Amount {{ indicator('amount') }}</th>
+          <th :aria-sort="ariaSort('account_name')">
+            <button type="button" class="sort-btn" @click="sortBy('account_name')">Account {{ indicator('account_name') }}</button>
+          </th>
+          <th :aria-sort="ariaSort('date')">
+            <button type="button" class="sort-btn" @click="sortBy('date')">Date {{ indicator('date') }}</button>
+          </th>
+          <th :aria-sort="ariaSort('payee_name')">
+            <button type="button" class="sort-btn" @click="sortBy('payee_name')">Payee {{ indicator('payee_name') }}</button>
+          </th>
+          <th :aria-sort="ariaSort('category_name')">
+            <button type="button" class="sort-btn" @click="sortBy('category_name')">Category {{ indicator('category_name') }}</button>
+          </th>
+          <th :aria-sort="ariaSort('memo')">
+            <button type="button" class="sort-btn" @click="sortBy('memo')">Memo {{ indicator('memo') }}</button>
+          </th>
+          <th :aria-sort="ariaSort('amount')">
+            <button type="button" class="sort-btn" @click="sortBy('amount')">Amount {{ indicator('amount') }}</button>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -40,12 +52,12 @@ export default {
   computed: {
     sortedTransactions() {
       const key = this.sortKey;
-      const order = this.sortOrder === 'desc' ? -1 : 1;
+      const asc = this.sortOrder === 'asc';
       return [...this.transactions].sort((a, b) => {
         const aVal = a[key] ?? '';
         const bVal = b[key] ?? '';
-        if (aVal < bVal) return -order;
-        if (aVal > bVal) return order;
+        if (aVal < bVal) return asc ? -1 : 1;
+        if (aVal > bVal) return asc ? 1 : -1;
         return 0;
       });
     },
@@ -63,7 +75,21 @@ export default {
       if (this.sortKey !== key) return '';
       return this.sortOrder === 'asc' ? '▲' : '▼';
     },
+    ariaSort(key) {
+      if (this.sortKey !== key) return 'none';
+      return this.sortOrder === 'asc' ? 'ascending' : 'descending';
+    },
     convertMilliUnitsToCurrencyAmount: utils.convertMilliUnitsToCurrencyAmount,
   },
 }
 </script>
+
+<style scoped>
+.sort-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+</style>
