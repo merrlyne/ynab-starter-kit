@@ -83,3 +83,13 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.sort-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+</style>
