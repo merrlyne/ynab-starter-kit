@@ -20,12 +20,13 @@ This is a Vue 3 single-page application bundled with webpack. Entry point is `sr
 
 ### App state machine (App.vue)
 
-All application logic lives in `src/App.vue`. The template conditionally renders one of four states driven by reactive data:
+All application logic lives in `src/App.vue`. A `loading` boolean overlays all states; aside from that, the template renders one of three mutually exclusive states:
 
 1. **No token** — shows an "Authorize with YNAB" button. Clicking it redirects to YNAB's OAuth endpoint using the `clientId` and `redirectUri` from `src/config.json`.
-2. **Token present, no budget selected** — renders `<Budgets>` with the list fetched via `api.budgets.getBudgets()`.
-3. **Budget selected** — renders `<Transactions>` with data from `api.transactions.getTransactions(budgetId)`.
-4. **Error** — shows the error message with a "Try Again" button that clears the token.
+2. **Token present, no budget selected** — renders `<Budgets>` with the list fetched via `this.api.budgets.getBudgets()`.
+3. **Budget selected** — renders `<Transactions>` with data from `this.api.transactions.getTransactions(budgetId)`.
+
+An **error** state (`this.error`) can appear in place of states 2–3, showing the error message with a "Try Again" button that clears the token.
 
 The OAuth flow is **Implicit Grant** — the access token arrives in `window.location.hash` after redirect and is persisted to `sessionStorage` under the key `ynab_access_token`.
 
@@ -50,4 +51,4 @@ The `ynab` npm package provides the API client and utilities. Key usage patterns
 
 Pushing to `main` triggers `.github/workflows/gh-deploy.yaml`, which runs `npm install && npm run build`, copies `dist/` into `public/`, then publishes `public/` to the `gh-pages` branch via `peaceiris/actions-gh-pages`. The live app is served from that branch by GitHub Pages.
 
-To use a custom domain, uncomment and set the `cname` field in `gh-deploy.yaml` and update `redirectUri` in `src/config.json` and in YNAB Developer Settings.
+To use a custom domain, add a `cname: your-domain.com` field under the `with:` block of the `peaceiris/actions-gh-pages` step in `gh-deploy.yaml`, then update `redirectUri` in `src/config.json` and register the new URL in YNAB Developer Settings.
