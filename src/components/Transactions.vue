@@ -13,7 +13,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="transaction in transactions" v-bind:key="transaction.id">
+      <tr v-for="transaction in sortedTransactions" v-bind:key="transaction.id">
         <td>{{transaction.account_name}}</td>
         <td>{{transaction.date}}</td>
         <td>{{transaction.payee_name}}</td>
@@ -32,6 +32,11 @@ import {utils} from 'ynab';
 
 export default {
   props: ['transactions'],
+  computed: {
+    sortedTransactions() {
+      return [...this.transactions].sort((a, b) => b.date.localeCompare(a.date));
+    }
+  },
   methods: {
     // Now we can make this method available to our template
     // So we can format this milliunits in the correct currency format
