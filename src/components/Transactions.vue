@@ -34,7 +34,7 @@ export default {
   props: ['transactions'],
   computed: {
     sortedTransactions() {
-      return [...this.transactions].sort((a, b) => b.date.localeCompare(a.date));
+      return [...this.transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
     }
   },
   methods: {
